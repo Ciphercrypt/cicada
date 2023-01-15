@@ -6,12 +6,12 @@ let messageInput = document.getElementById('message-input')
 let currentUser = "hreshi"
 let myself = "hreshi"
 
-let userList = ["hreshi", "mspatild7", "aakanksha2812", "meera12kesh"]
+let userList = ["Hreshi", "mspatild7", "aakanksha2812", "Hrushikeshkale"]
 let messageStore = []
-messageStore["hreshi"] = []
+messageStore["Hreshi"] = []
 messageStore["mspatild7"] = []
 messageStore["aakanksha2812"] = []
-messageStore["meera12kesh"] = []
+messageStore["Hrushikeshkale"] = []
 
 
 async function req(url) {
@@ -26,7 +26,7 @@ sendBtn.addEventListener('click', function (event) {
         recver:currentUser,
         content:messageInput.value
     }
-    messageStore[currentUser.toLocaleLowerCase()].push(message)
+    messageStore[currentUser].push(message)
     appendMessage(message)
     sendMessage(message.content)
     messageInput.value = ""
@@ -71,7 +71,7 @@ function handleContactClickEvent(element) {
         messageList.removeChild(messageList.firstChild)
     }
     let sender = element.getAttribute("id")
-    messageStore[sender.toLocaleLowerCase()].forEach(message => {
+    messageStore[sender].forEach(message => {
         appendMessage(message)
     })
 }
@@ -88,8 +88,8 @@ function addUsersToContactList() {
 }
 
 function handleIncomingMessage(message) {
-    messageStore[message.sender.toLocaleLowerCase()].push(message);
-    if(message.sender.toLowerCase() === currentUser.toLocaleLowerCase()) {
+    messageStore[message.sender].push(message);
+    if(message.sender === currentUser) {
         appendMessage(message)
         console.log("apple"+ message)
     }
@@ -106,8 +106,8 @@ function connect() {
             console.log("Message Received : ");
             let msg = JSON.parse(data.body)
             let message = {
-                sender:msg.sender.toLocaleLowerCase(),
-                recver:msg.recver.toLocaleLowerCase(),
+                sender:msg.sender,
+                recver:msg.recver,
                 content:msg.content
             }
             handleIncomingMessage(message)
@@ -129,9 +129,9 @@ async function setMyself() {
     let res = await fetch("/user/data");
     let name = await JSON.parse(await res.text());
 
-    myself = name.username.toLocaleLowerCase()
+    myself = name.username
     for(let i = 0;i < userList.length;i++) {
-        if(userList[i].toLowerCase() === myself.toLocaleLowerCase()) {
+        if(userList[i] === myself) {
             userList.splice(i,1)
         }
     }

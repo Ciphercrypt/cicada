@@ -19,7 +19,8 @@ public class WebSocketEventListener {
         if(token == null) return;
         String name = token.getPrincipal().getAttribute("login");
         if(name != null) {
-            repository.setOnline(name.toLowerCase());
+            System.out.println("Connected : " + name);
+            repository.setOnline(name);
         }
     }
 
@@ -29,7 +30,8 @@ public class WebSocketEventListener {
         if(token == null) return;
         String name = token.getPrincipal().getAttribute("login");
         if(name != null) {
-            repository.setOffline(name.toLowerCase());
+            System.out.println("Disconnected : " + name);
+            repository.setOffline(name);
         }
     }
 }
