@@ -34,4 +34,10 @@ public class AuthController {
         repository.save(user);
         return username;
     }
+
+    @GetMapping("/public/data/{username}")
+    @ResponseBody
+    public User getUserDataPublic(@PathVariable String username) {
+        return repository.findByUsername(username);
+    }
 }
