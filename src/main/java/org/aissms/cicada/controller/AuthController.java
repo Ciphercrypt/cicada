@@ -31,6 +31,10 @@ public class AuthController {
         if(session.getAttribute("login") != null) return "null";
         session.setAttribute("login", username);
         User user = new User(username, "https://avatars.githubusercontent.com/u/122953429?v=4");
+        User exist = repository.findByUsername(username);
+        if(exist == null) {
+            repository.save(user);
+        }
         repository.save(user);
         return username;
     }

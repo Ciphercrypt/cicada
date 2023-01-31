@@ -58,7 +58,7 @@ public class InvitationController {
         String authorizationHeader = request.getHeader("Authorization");
         System.out.println(authorizationHeader);
 
-        List<Invitation> list = inviteRepository.findByInviteFrom(authorizationHeader)
+        List<Invitation> list = inviteRepository.findByInviteFrom(authorizationHeader);
         System.out.println(inviteRepository);
         list.addAll(inviteRepository.findByInviteTo(authorizationHeader));
         return list;
