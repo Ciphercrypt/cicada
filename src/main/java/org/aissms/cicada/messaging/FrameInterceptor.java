@@ -1,5 +1,7 @@
 package org.aissms.cicada.messaging;
 
+import java.util.Map;
+
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -20,9 +22,10 @@ public class FrameInterceptor implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         StompCommand command = accessor.getCommand();
         if(StompCommand.SUBSCRIBE.compareTo(command) == 0) {
-            OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) accessor.getUser();
-            if(token == null) return null;
-            String username = token.getPrincipal().getAttribute("login");
+            Map<String,Object> map = accessor.getSessionAttributes();
+            // OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) accessor.getUser();
+            if(map == null) return null;
+            String username = (String)map.get("login");
             String destination = "/messages/" + username;
             if(!destination.equalsIgnoreCase(accessor.getDestination())) {
                 return null;

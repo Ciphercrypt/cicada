@@ -2,6 +2,7 @@ package org.aissms.cicada.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.aissms.cicada.entity.Friendship;
@@ -21,8 +22,8 @@ public class FriendshipController {
     @Autowired FriendshipRepository friendshipRepository;
 
     @GetMapping("/all")
-    public List<Friendship> getAllFriends(@AuthenticationPrincipal OAuth2User oAuth2User) {
-        String user = oAuth2User.getAttribute("login");
+    public List<Friendship> getAllFriends(HttpSession oAuth2User) {
+        String user = (String) oAuth2User.getAttribute("login");
         List<Friendship> friendList = friendshipRepository.findByUsername(user);
         friendList.addAll(friendshipRepository.findByFriend(user));
         return friendList;
@@ -30,8 +31,8 @@ public class FriendshipController {
 
     @PostMapping("/delete/{username}")
     @Transactional
-    public void deleteFriendship(@PathVariable String username,@AuthenticationPrincipal OAuth2User oAuth2User) {
-        String currentUser = oAuth2User.getAttribute("login");
+    public void deleteFriendship(@PathVariable String username,HttpSession oAuth2User) {
+        String currentUser = (String) oAuth2User.getAttribute("login");
         friendshipRepository.deleteByUsernameAndFriend(currentUser, username);
         friendshipRepository.deleteByUsernameAndFriend(username, currentUser);
     }

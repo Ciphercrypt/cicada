@@ -1,5 +1,7 @@
 package org.aissms.cicada.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.aissms.cicada.entity.User;
 import org.aissms.cicada.entity.UserStatus;
 import org.aissms.cicada.repository.UserStatusRepository;
@@ -16,8 +18,8 @@ public class UserController {
     @Autowired UserStatusRepository repository;
 
     @GetMapping("/user/data")
-    public User userDataController(@AuthenticationPrincipal OAuth2User oauth) {
-        return new User(oauth.getAttribute("login"), oauth.getAttribute("avatar_url"));
+    public User userDataController(HttpSession oauth) {
+        return new User((String)oauth.getAttribute("login"),(String) oauth.getAttribute("avatar_url"));
     }
     
     @GetMapping("/user/status/{username}")

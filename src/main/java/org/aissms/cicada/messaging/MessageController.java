@@ -1,5 +1,7 @@
 package org.aissms.cicada.messaging;
 
+import javax.servlet.http.HttpSession;
+
 import org.aissms.cicada.entity.TextMessage;
 import org.aissms.cicada.repository.TextMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,9 @@ public class MessageController {
     @Autowired private SimpMessagingTemplate template;
     @Autowired private TextMessageRepository repository;
     @MessageMapping("/send")
-    public void sendMessage(Message<TextMessage> message, OAuth2AuthenticationToken user) {
+    public void sendMessage(Message<TextMessage> message, HttpSession user) {
         TextMessage ms = message.getPayload();
-        String name = user.getPrincipal().getAttribute("login");
+        String name = (String)user.getAttribute("login");
         if(name != null && name.equalsIgnoreCase(ms.getSender())) {
             repository.save(ms);
             template.convertAndSend("/messages/" + ms.getRecver(), ms);

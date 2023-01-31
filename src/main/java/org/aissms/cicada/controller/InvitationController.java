@@ -2,6 +2,7 @@ package org.aissms.cicada.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.aissms.cicada.entity.Friendship;
@@ -25,15 +26,15 @@ public class InvitationController {
     @Autowired FriendshipRepository friendRepository;
 
     @PostMapping("/send/{username}")
-    public void sendInvitation(@PathVariable String username,@AuthenticationPrincipal OAuth2User user) {
-        Invitation invite = new Invitation(user.getAttribute("login"), username);
+    public void sendInvitation(@PathVariable String username,HttpSession user) {
+        Invitation invite = new Invitation((String)user.getAttribute("login"), username);
         inviteRepository.save(invite);
     }
 
     @PostMapping("/accept/{username}")
     @Transactional
-    public void acceptInvitation(@PathVariable String username,@AuthenticationPrincipal OAuth2User user) {
-        String currentUser = user.getAttribute("login");
+    public void acceptInvitation(@PathVariable String username,HttpSession user) {
+        String currentUser = (String) user.getAttribute("login");
         Invitation invite = inviteRepository.findByInviteFromAndInviteTo(username, currentUser);
         if(invite == null) return;
         inviteRepository.deleteByInviteFromAndInviteTo(username, currentUser);
@@ -42,9 +43,9 @@ public class InvitationController {
     }
 
     @GetMapping("/all")
-    public List<Invitation> getAllInvitation(@AuthenticationPrincipal OAuth2User user) {
-        List<Invitation> list = inviteRepository.findByInviteFrom(user.getAttribute("login"));
-        list.addAll(inviteRepository.findByInviteTo(user.getAttribute("login")));
+    public List<Invitation> getAllInvitation(HttpSession user) {
+        List<Invitation> list = inviteRepository.findByInviteFrom((String)user.getAttribute("login"));
+        list.addAll(inviteRepository.findByInviteTo((String)user.getAttribute("login")));
         return list;
     }
 }

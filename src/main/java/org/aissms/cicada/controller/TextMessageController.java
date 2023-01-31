@@ -3,6 +3,8 @@ package org.aissms.cicada.controller;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.aissms.cicada.entity.TextMessage;
 import org.aissms.cicada.repository.TextMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,9 @@ public class TextMessageController {
     @Autowired TextMessageRepository repository;
 
     @GetMapping("/text/{username}")
-    public List<TextMessage> getTextMessage(@PathVariable String username, @AuthenticationPrincipal OAuth2User oauth) {
-        List<TextMessage> res = repository.findAllBySenderAndRecver(username, oauth.getAttribute("login"));
-        res.addAll(repository.findAllBySenderAndRecver(oauth.getAttribute("login"), username));
+    public List<TextMessage> getTextMessage(@PathVariable String username, HttpSession oauth) {
+        List<TextMessage> res = repository.findAllBySenderAndRecver(username,(String) oauth.getAttribute("login"));
+        res.addAll(repository.findAllBySenderAndRecver((String)oauth.getAttribute("login"), username));
         Collections.sort(res, (text1, text2) -> {
             return text1.getId() < text2.getId() ? -1 : 1;
         });

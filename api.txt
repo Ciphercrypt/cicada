@@ -1,0 +1,62 @@
+Sign in with github:
+	1) Click on link - 'localhost:8080/oauth2/authorization/github'
+		It will redirect to github login and after login it will again redirect to localhost
+	2) After login we can access api and websocket
+
+
+Invite:
+	1) Get all invites
+		request = "localhost:8080/invite/all"
+		response = [{"inviteFrom":"Hreshi","inviteTo":"hrushikeshkale"}]
+
+	2) Send invite
+		request = 'localhost:8080/invite/send/username'
+		method = post
+
+	3) Accept invite
+		request = 'localhost:8080/invite/accept/username'
+		method = post
+
+Friendship:
+	1) Get all friends
+		request = 'localhost:8080/friend/all'
+		response = [{"username":"Hrushikeshkale","friend":"Hreshi"}]
+	2) Delete friend
+		request = 'localhost:8080/friend/delete/username'
+		method = post
+
+Messages:
+	1) Get chat with user
+		request = 'localhost:8080/text/username'
+		response = [
+			{"id":1,"sender":"Hrushikeshkale","recver":"Hreshi","content":"hola"},
+			{"id":2,"sender":"Hrushikeshkale","recver":"Hreshi","content":"hi what doing"},
+			{"id":3,"sender":"Hrushikeshkale","recver":"Hreshi","content":"nothing"},
+			{"id":4,"sender":"Hrushikeshkale","recver":"Hreshi","content":"much"}
+		]
+
+User data:
+	1) Get self data
+		request = 'localhost:8080/user/data'
+		response = {
+			"username":"Hrushikeshkale",
+			"avatarUrl":"https://avatars.githubusercontent.com/u/60249673?v=4"
+		}
+	2) Get some user's status
+		requset = 'localhost:8080/user/status/username'
+		response = {"username":"Hreshi","status":"online"}
+
+For websocket messaging we are using sockjs
+
+Connect:
+	1) Connect to websocket with 'localhost:8080/ws/connect'
+	2) Subscribe to 'localhost:8080/messages/yourusername'
+
+Send message:
+	request = "localhost:8080/ms/send"
+	data = let message = {
+                sender:msg.sender,
+                recver:msg.recver,
+                content:msg.content
+            }
+    Note * - the spelling is "recver" without i
