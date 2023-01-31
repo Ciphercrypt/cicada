@@ -2,6 +2,7 @@ package org.aissms.cicada.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
@@ -26,26 +27,40 @@ public class InvitationController {
     @Autowired FriendshipRepository friendRepository;
 
     @PostMapping("/send/{username}")
-    public void sendInvitation(@PathVariable String username,HttpSession user) {
-        Invitation invite = new Invitation((String)user.getAttribute("login"), username);
+    public void sendInvitation(@PathVariable String username,HttpSession user, HttpServletRequest request) {
+
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println(authorizationHeader);
+
+        Invitation invite = new Invitation((String)authorizationHeader, username);
         inviteRepository.save(invite);
     }
 
     @PostMapping("/accept/{username}")
     @Transactional
-    public void acceptInvitation(@PathVariable String username,HttpSession user) {
-        String currentUser = (String) user.getAttribute("login");
-        Invitation invite = inviteRepository.findByInviteFromAndInviteTo(username, currentUser);
+    public void acceptInvitation(@PathVariable String username,HttpSession user,HttpServletRequest request) {
+
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println(authorizationHeader);
+
+
+       // String currentUser = (String) user.getAttribute("login");
+        Invitation invite = inviteRepository.findByInviteFromAndInviteTo(username, authorizationHeader);
         if(invite == null) return;
-        inviteRepository.deleteByInviteFromAndInviteTo(username, currentUser);
-        Friendship friendship = new Friendship(username, currentUser);
+        inviteRepository.deleteByInviteFromAndInviteTo(username, authorizationHeader);
+        Friendship friendship = new Friendship(username, authorizationHeader);
         friendRepository.save(friendship);
     }
 
     @GetMapping("/all")
-    public List<Invitation> getAllInvitation(HttpSession user) {
-        List<Invitation> list = inviteRepository.findByInviteFrom((String)user.getAttribute("login"));
-        list.addAll(inviteRepository.findByInviteTo((String)user.getAttribute("login")));
+    public List<Invitation> getAllInvitation(HttpSession user, HttpServletRequest request) {
+
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println(authorizationHeader);
+
+        List<Invitation> list = inviteRepository.findByInviteFrom(authorizationHeader)
+        System.out.println(inviteRepository);
+        list.addAll(inviteRepository.findByInviteTo(authorizationHeader));
         return list;
     }
 }

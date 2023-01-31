@@ -3,6 +3,7 @@ package org.aissms.cicada.controller;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.aissms.cicada.entity.TextMessage;
@@ -19,9 +20,12 @@ public class TextMessageController {
     @Autowired TextMessageRepository repository;
 
     @GetMapping("/text/{username}")
-    public List<TextMessage> getTextMessage(@PathVariable String username, HttpSession oauth) {
-        List<TextMessage> res = repository.findAllBySenderAndRecver(username,(String) oauth.getAttribute("login"));
-        res.addAll(repository.findAllBySenderAndRecver((String)oauth.getAttribute("login"), username));
+    public List<TextMessage> getTextMessage(@PathVariable String username, HttpSession oauth, HttpServletRequest request) {
+
+        String authorizationHeader = request.getHeader("Authorization");
+    System.out.println(authorizationHeader);
+        List<TextMessage> res = repository.findAllBySenderAndRecver(username,(String) authorizationHeader);
+        res.addAll(repository.findAllBySenderAndRecver((String)authorizationHeader, username));
         Collections.sort(res, (text1, text2) -> {
             return text1.getId() < text2.getId() ? -1 : 1;
         });
